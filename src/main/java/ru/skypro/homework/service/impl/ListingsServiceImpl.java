@@ -24,6 +24,7 @@ import ru.skypro.homework.service.ListingsService;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -35,13 +36,17 @@ public class ListingsServiceImpl implements ListingsService {
     private final ImageRepository imageRepository;
     private final ListingMapper listingMapper;
     private final ImageService imageService;
-    private Listing listing;
-    private Authentication authentication;
 
     @Override
-    public ListingDTO getAllListings() {
+    public List<ListingDTO> getAllListings() {
         List<Listing> listings = listingRepository.findAll();
-        return listingMapper.listingToListingDTO(listings);
+        List<ListingDTO> listingsDTO = new ArrayList<>();
+        if (!listings.isEmpty()) {
+            for (Listing listing : listings) {
+                listingsDTO.add(listingMapper.listingToListingDTO(listing));
+            }
+        }
+        return listingsDTO;
     }
 
     @Override
@@ -91,7 +96,7 @@ public class ListingsServiceImpl implements ListingsService {
     @Override
     public ListingsDTO getListingsMe(Authentication authentication) {
         User user = new GetAuthentication().getAuthenticationUser(authentication.getName());
-        List<Listing> listingList = listingRepository.findListingByAuthorId(user.getId());
+        List<Listing> listingList = listingRepository.findListingByUserId(user.getId());
         return listingMapper.listingListToListings(listingList);
     }
 
