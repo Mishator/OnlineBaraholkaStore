@@ -12,8 +12,7 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class Listing implements List<Listing> {
-
+public class Listing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
