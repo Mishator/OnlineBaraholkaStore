@@ -13,6 +13,7 @@ import ru.skypro.homework.service.AvatarService;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -39,7 +40,7 @@ public class AvatarServiceImpl implements AvatarService {
     public Avatar uploadAvatar(MultipartFile image) throws IOException {
         User user = userRepository.findUserByEmailIgnoreCase(SecurityContextHolder.getContext().getAuthentication().getName()).get();
 
-        Path filePath = Path.of(uploadDirectory,"user_" + user.getId() + "." + getExtensions(image.getOriginalFilename()));
+        Path filePath = Path.of(uploadDirectory,"user_" + user.getId() + "." + getExtensions(Objects.requireNonNull(image.getOriginalFilename())));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
         try (

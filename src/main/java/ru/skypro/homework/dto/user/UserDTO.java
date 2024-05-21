@@ -2,11 +2,13 @@ package ru.skypro.homework.dto.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ru.skypro.homework.dto.Role;
 
 
 @Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
