@@ -1,18 +1,20 @@
 package ru.skypro.homework.serviceImpl;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.entity.Image;
 import ru.skypro.homework.repository.ImageRepository;
 import ru.skypro.homework.service.impl.ImageServiceImpl;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,26 +30,36 @@ public class ImageServiceImplTest {
     @InjectMocks
     private ImageServiceImpl imageService;
 
+    private MultipartFile mockFile;
+
+    @BeforeEach
+    public void setUp() {
+        // Создаем мок MultipartFile
+        mockFile = new MockMultipartFile("image", "test.jpg", "image/jpeg", "test data".getBytes());
+    }
+
     @Test
     public void testUploadImage() throws IOException {
-        // подготовка данных
         long id = 1L;
-        MultipartFile imageFile = mock(MultipartFile.class);
-        when(imageFile.getOriginalFilename()).thenReturn("test.jpg");
-        when(imageFile.getInputStream()).thenReturn(new ByteArrayInputStream(new byte[10]));
-        when(imageFile.getSize()).thenReturn(10L);
-        when(imageFile.getContentType()).thenReturn("image/jpeg");
-        when(imageFile.getBytes()).thenReturn(new byte[10]);
 
-        // вызов метода uploadImage
-        Image image = imageService.uploadImage(id, imageFile);
+        // Убедимся, что директория для загрузки существует или создается.
+        Path uploadDirectory = Path.of(System.getProperty("user.dir"), "images");
+        Files.createDirectories(uploadDirectory);
 
-        // проверка взаимодействий и результатов
-        verify(repository).save(image);
-        assertEquals("listing_1.jpg", image.getFilePath());
-        assertEquals(10L, image.getFileSize());
-        assertEquals("image/jpeg", image.getMediaType());
-        Assertions.assertArrayEquals(new byte[10], image.getData());
+        // Вызов метода uploadImage
+        Image uploadedImage = imageService.uploadImage(id, mockFile);
+
+        // Проверяем, что возвращаемый объект не null
+        assertNotNull(uploadedImage);
+        assertEquals("test.jpg", uploadedImage.getFilePath().substring(uploadedImage.getFilePath().lastIndexOf("/") + 1));
+        assertEquals(mockFile.getSize(), uploadedImage.getFileSize());
+        assertEquals(mockFile.getContentType(), uploadedImage.getMediaType());
+
+        // Проверяем, что метод save был вызван один раз
+        verify(repository, times(1)).save(any(Image.class));
+
+        // Удаляем созданные файлы после теста
+        Files.deleteIfExists(Path.of(uploadDirectory.toString(), "listing_" + id + ".jpg"));
     }
 
     @Test

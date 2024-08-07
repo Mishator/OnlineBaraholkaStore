@@ -71,7 +71,9 @@ public class AuthServiceImplTest {
 
         Register register = new Register("testuser", "password", "Misha", "Vatex", "misha.vatex@example.com", ADMIN);
         User user = mock(User.class);
-
+        user.setEmail(register.getUsername());
+        user.setPassword(register.getPassword());
+        user.setRole(register.getRole());
 
         when(mapper.registerToUser(register)).thenReturn(user);
         when(repository.existsUserByEmailIgnoreCase(user.getEmail())).thenReturn(false);

@@ -1,13 +1,17 @@
 package ru.skypro.homework.serviceImpl;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 import org.webjars.NotFoundException;
+import ru.skypro.homework.config.UserDetailsImpl;
 import ru.skypro.homework.dto.listing.CreateOrUpdateListing;
 import ru.skypro.homework.dto.listing.ExtendedListingDTO;
 import ru.skypro.homework.dto.listing.ListingDTO;
@@ -47,6 +51,14 @@ public class ListingsServiceImplTest {
     @InjectMocks
     private ListingsServiceImpl listingsService;
 
+    @Mock
+    private SecurityContext securityContext;
+
+    @BeforeEach
+    public void setUp() {
+        SecurityContextHolder.setContext(securityContext);
+    }
+
     @Test
     public void testGetAllListings() {
 
@@ -72,9 +84,15 @@ public class ListingsServiceImplTest {
         Listing listing = mock(Listing.class);
         Image savedImage = mock(Image.class);
         ListingDTO listingDTO = mock(ListingDTO.class);
+        UserDetailsImpl userDetails = mock(UserDetailsImpl.class);
 
+        when(securityContext.getAuthentication()).thenReturn(authentication);
 
         when(authentication.getName()).thenReturn("testuser");
+
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        when(userDetails.getUser()).thenReturn(user);
+
         when(listingMapper.createOrUpdateListingToListing(createOrUpdateListing)).thenReturn(listing);
         when(listingRepository.save(listing)).thenReturn(listing);
         when(imageService.uploadImage(anyLong(), eq(image))).thenReturn(savedImage);
