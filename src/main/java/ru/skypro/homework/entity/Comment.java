@@ -22,12 +22,12 @@ public class Comment {
 
     private String text;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "author_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
     private User author;
 
 
-    @ManyToOne(optional = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pk_listing")
     private Listing listing;
 

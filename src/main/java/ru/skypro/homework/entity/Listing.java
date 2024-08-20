@@ -16,12 +16,13 @@ public class Listing {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    private Integer price;
+    private String description;
+    private int price;
     private String title;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "author_id")
-    private User user;
+    private User author;
 
     @OneToOne
     private Image image;
