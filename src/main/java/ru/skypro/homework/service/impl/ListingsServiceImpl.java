@@ -55,7 +55,7 @@ public class ListingsServiceImpl implements ListingsService {
     public ListingDTO addListing(CreateOrUpdateListing createOrUpdateListing, MultipartFile image, Authentication authentication) throws IOException {
         Listing listing = listingMapper.createOrUpdateListingToListing(createOrUpdateListing);
         User user = new GetAuthentication().getAuthenticationUser(authentication.getName());
-        listing.setUser(user);
+        listing.setAuthor(user);
         listingRepository.save(listing);
         listing.setImage(imageService.uploadImage(listing.getId(), image));
         listingRepository.save(listing);
@@ -83,12 +83,13 @@ public class ListingsServiceImpl implements ListingsService {
 
 
     @Override
-    public ListingDTO updateListing(long id, CreateOrUpdateListing createOrUpdateAd, Authentication authentication) throws AccessDeniedException {
+    public ListingDTO updateListing(long id, CreateOrUpdateListing createOrUpdateListing, Authentication authentication) throws AccessDeniedException {
         Listing listing = listingRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Объявление с ID" + id + "не найдено"));
         checkPermit(listing, authentication);
-        listing.setTitle(createOrUpdateAd.getTitle());
-        listing.setPrice(createOrUpdateAd.getPrice());
+        listing.setTitle(createOrUpdateListing.getTitle());
+        listing.setDescription(createOrUpdateListing.getDescription());
+        listing.setPrice(createOrUpdateListing.getPrice());
         listingRepository.save(listing);
         return listingMapper.listingToListingDTO(listing);
     }
@@ -98,7 +99,7 @@ public class ListingsServiceImpl implements ListingsService {
     @Override
     public ListingsDTO getListingsMe(Authentication authentication) {
         User user = new GetAuthentication().getAuthenticationUser(authentication.getName());
-        List<Listing> listingList = listingRepository.findListingByUserId(user.getId());
+        List<Listing> listingList = listingRepository.findListingByAuthorId(user.getId());
         return listingMapper.listingListToListings(listingList);
     }
 
@@ -115,7 +116,7 @@ public class ListingsServiceImpl implements ListingsService {
     }
 
     public void checkPermit(Listing listing, Authentication authentication) throws AccessDeniedException {
-        if (!listing.getUser().getEmail().equals(authentication.getName())
+        if (!listing.getAuthor().getEmail().equals(authentication.getName())
                 && !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
             throw new AccessDeniedException("Вы не можете редактировать или удалять чужое объявление");
         }

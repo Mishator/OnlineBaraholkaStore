@@ -17,7 +17,7 @@ public class Listing {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String description;
-    private int price;
+    private Integer price;
     private String title;
 
     @ManyToOne(fetch = FetchType.LAZY)

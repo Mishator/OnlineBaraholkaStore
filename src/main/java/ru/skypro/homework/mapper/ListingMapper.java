@@ -16,26 +16,31 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface ListingMapper {
 
-    String address = "/listings/image";
+    String address = "/ads/image";
+
+    @Mapping(target = "id", source = "pk")
+    @Mapping(target = "author.id", source = "author")
+    @Mapping(target = "image", ignore = true)
+    Listing listingDTOToListing(ListingDTO dto);
 
 
     @Mapping(target = "pk", source = "id")
-    @Mapping(target = "author", source = "user.id")
+    @Mapping(target = "author", source = "author.id")
     @Mapping(target = "image", source = "image", qualifiedByName = "imageToString")
     ListingDTO listingToListingDTO(Listing entity);
 
     @Mapping(target = "pk", source = "id")
-    @Mapping(target = "authorFirstName", source = "user.firstName")
-    @Mapping(target = "authorLastName", source = "user.lastName")
-    @Mapping(target = "email", source = "user.email")
-    @Mapping(target = "phone", source = "user.phone")
+    @Mapping(target = "authorFirstName", source = "author.firstName")
+    @Mapping(target = "authorLastName", source = "author.lastName")
+    @Mapping(target = "email", source = "author.email")
+    @Mapping(target = "phone", source = "author.phone")
     @Mapping(target = "image", source = "image", qualifiedByName = "imageToString")
     ExtendedListingDTO toExtendedListing(Listing entity);
 
 
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "user", ignore = true)
+    @Mapping(target = "author", ignore = true)
     @Mapping(target = "image", ignore = true)
     Listing createOrUpdateListingToListing(CreateOrUpdateListing dto);
 
