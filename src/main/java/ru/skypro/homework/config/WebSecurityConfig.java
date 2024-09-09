@@ -13,6 +13,12 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+/**
+ * <b> Конфиг-класс для настройки Security </b> <p>
+ * Содержит {@link #AUTH_WHITELIST} - ссылки доступные для всех пользователей <p>
+ * {@link #filterChain} - метод настройки доступа к ссылкам
+ * {@link #passwordEncoder} - метод для хеширования паролей
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity

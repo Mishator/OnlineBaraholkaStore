@@ -23,7 +23,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Image uploadImage(long id, MultipartFile imageFile) throws IOException {
 
-        Path filePath = Path.of(uploadDirectory, "listing_" + id + "." + "." + "." + getExtensions(imageFile.getOriginalFilename()));
+        Path filePath = Path.of(uploadDirectory, "listing_" + id + "." + getExtensions(imageFile.getOriginalFilename()));
         Files.createDirectories(filePath.getParent());
         Files.deleteIfExists(filePath);
 
