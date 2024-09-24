@@ -8,6 +8,32 @@ import ru.skypro.homework.dto.user.UserDTO;
 import ru.skypro.homework.entity.Avatar;
 import ru.skypro.homework.entity.User;
 
+/**
+ * Интерфейс UserMapper отвечает за преобразование объектов между
+ * сущностью User и различными DTO (Data Transfer Objects) с использованием MapStruct.
+ *
+ * <p>Данный маппер упрощает преобразование данных между слоями приложения,
+ * минимизируя объем повторяющегося кода и обеспечивая более чистую архитектуру.</p>
+ *
+ * <p>Методы:</p>
+ * <ul>
+ *     <li>{@link #userToUserDto(User)} - преобразует объект User в объект UserDTO.</li>
+ *     <li>{@link #userDtoToUser(UserDTO)} - преобразует объект UserDTO в объект User.</li>
+ *     <li>{@link #registerToUser(Register)} - преобразует объект Register в объект User.</li>
+ *     <li>{@link #avatarToString(Avatar)} - преобразует объект Avatar в строку,
+ *     представляющую URL изображения.</li>
+ * </ul>
+ *
+ * <p>Примечания:</p>
+ * <ul>
+ *     <li>При преобразовании из UserDTO в User игнорируются поля
+ *     {@code password}, {@code avatar} и {@code role}.</li>
+ *     <li>При преобразовании из Register в User поле {@code username}
+ *     сопоставляется с полем {@code email}, а роль по умолчанию устанавливается на "USER".</li>
+ *     <li>Метод {@code avatarToString} возвращает строку по адресу изображения
+ *     или {@code null}, если аватар отсутствует.</li>
+ * </ul>
+ */
 @Mapper(componentModel = "spring")
 public interface UserMapper {
 

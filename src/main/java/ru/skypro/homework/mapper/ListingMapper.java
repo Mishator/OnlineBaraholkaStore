@@ -13,6 +13,40 @@ import ru.skypro.homework.entity.Listing;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Интерфейс ListingMapper отвечает за преобразование объектов между
+ * сущностями Listing и различными DTO (Data Transfer Objects) с использованием MapStruct.
+ *
+ * <p>Данный маппер упрощает преобразование данных между слоями приложения,
+ * минимизируя объем повторяющегося кода и обеспечивая более чистую архитектуру.</p>
+ *
+ * <p>Методы:</p>
+ * <ul>
+ *     <li>{@link #listingDTOToListing(ListingDTO)} - преобразует объект
+ *     ListingDTO в объект Listing.</li>
+ *     <li>{@link #listingToListingDTO(Listing)} - преобразует объект
+ *     Listing в объект ListingDTO.</li>
+ *     <li>{@link #toExtendedListing(Listing)} - преобразует объект
+ *     Listing в объект ExtendedListingDTO, включая информацию об авторе.</li>
+ *     <li>{@link #createOrUpdateListingToListing(CreateOrUpdateListing)} -
+ *     преобразует объект CreateOrUpdateListing в объект Listing.</li>
+ *     <li>{@link #imageToString(Image)} - преобразует объект Image в строку,
+ *     представляющую URL изображения.</li>
+ *     <li>{@link #listingListToListings(List<Listing>)} - преобразует список объектов
+ *     Listing в объект ListingsDTO, содержащий количество и результаты.</li>
+ * </ul>
+ *
+ * <p>Примечания:</p>
+ * <ul>
+ *     <li>При преобразовании из ListingDTO в Listing игнорируются поля
+ *     {@code image} и {@code author}.</li>
+ *     <li>При преобразовании из Listing в ListingDTO используется поле
+ *     {@code author.id} для установки автора, а также поле {@code image}
+ *     для получения URL изображения.</li>
+ *     <li>Метод {@code imageToString} возвращает строку по адресу изображения
+ *     или {@code null}, если изображение отсутствует.</li>
+ * </ul>
+ */
 @Mapper(componentModel = "spring")
 public interface ListingMapper {
 
