@@ -23,6 +23,10 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * <b>Реализация сервиса для работы с комментариями. </b> <p>
+ * Предоставляет методы для получения, добавления, обновления и удаления комментариев.
+ */
 @Service
 @RequiredArgsConstructor
 public class CommentsServiceImpl implements CommentsService {
@@ -31,6 +35,12 @@ public class CommentsServiceImpl implements CommentsService {
     private final CommentRepository commentRepository;
     private final CommentMapper commentMapper;
 
+    /**
+     * <b>Получает список комментариев для указанного объявления. </b> <p>
+     *
+     * @param id идентификатор объявления
+     * @return объект CommentsDTO, содержащий количество и список комментариев
+     */
     @Override
     public CommentsDTO getComments(long id) {
         List<Comment> commentList = commentRepository.findCommentsByListingId(id);
@@ -42,6 +52,15 @@ public class CommentsServiceImpl implements CommentsService {
         return commentsDTO;
     }
 
+    /**
+     * <b>Добавляет новый комментарий к указанному объявлению. </b> <p>
+     *
+     * @param id идентификатор объявления
+     * @param createOrUpdateComment данные комментария для создания
+     * @param authentication объект аутентификации текущего пользователя
+     * @return объект CommentDTO, представляющий добавленный комментарий
+     * @throws NotFoundException если объявление с указанным ID не найдено
+     */
     @Override
     public CommentDTO addComment(long id, CreateOrUpdateComment createOrUpdateComment, Authentication authentication) {
         Listing listing = listingRepository.findById(id).orElseThrow(()->
@@ -56,6 +75,15 @@ public class CommentsServiceImpl implements CommentsService {
         return commentMapper.commentToCommentDto(comment);
     }
 
+    /**
+     * <b>Удаляет комментарий, если у текущего пользователя есть права на это. </b> <p>
+     *
+     * @param listingId идентификатор объявления
+     * @param commentId идентификатор комментария
+     * @param authentication объект аутентификации текущего пользователя
+     * @throws AccessDeniedException если у пользователя нет прав на удаление комментария
+     * @throws NotFoundException если комментарий с указанным ID не найден
+     */
     @Override
     @Transactional
     public void deleteComment(long listingId, long commentId, Authentication authentication) throws AccessDeniedException {
@@ -65,6 +93,17 @@ public class CommentsServiceImpl implements CommentsService {
         commentRepository.delete(comment);
     }
 
+    /**
+     * <b>Обновляет существующий комментарий, если у текущего пользователя есть права на это. </b> <p>
+     *
+     * @param listingId идентификатор объявления
+     * @param commentId идентификатор комментария
+     * @param createOrUpdateComment данные для обновления комментария
+     * @param authentication объект аутентификации текущего пользователя
+     * @return объект CommentDTO, представляющий обновленный комментарий
+     * @throws AccessDeniedException если у пользователя нет прав на обновление комментария
+     * @throws NotFoundException если комментарий с указанным ID не найден
+     */
     @Override
     @Transactional
     public CommentDTO updateComment(long listingId, long commentId, CreateOrUpdateComment createOrUpdateComment, Authentication authentication) throws AccessDeniedException {
@@ -75,6 +114,13 @@ public class CommentsServiceImpl implements CommentsService {
         return commentMapper.commentToCommentDto(commentRepository.save(comment));
     }
 
+    /**
+     * <b>Проверяет, имеет ли текущий пользователь право редактировать или удалять комментарий. </b> <p>
+     *
+     * @param comment объект комментария для проверки прав доступа
+     * @param authentication объект аутентификации текущего пользователя
+     * @throws AccessDeniedException если у пользователя нет прав на редактирование или удаление комментария
+     */
     public void checkPermit(Comment comment, Authentication authentication) throws AccessDeniedException {
         if (!comment.getAuthor().getEmail().equals(authentication.getName()) && !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
             throw new AccessDeniedException("Вы не можете редактировать или удалять чужое объявление");

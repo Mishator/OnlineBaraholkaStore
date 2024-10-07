@@ -17,25 +17,54 @@ import java.util.Objects;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
+/**
+ * <b>Сервис для управления аватарами пользователей. </b> <p>
+ * <p>
+ * Этот класс реализует интерфейс {@link AvatarService} и предоставляет методы
+ * для загрузки, получения и удаления аватаров.
+ * </p>
+ */
 @Service
 @RequiredArgsConstructor
 public class AvatarServiceImpl implements AvatarService {
 
+    /**
+     * <b>Путь к директории, где хранятся загруженные изображения. </b> <p>
+     */
     public static String uploadDirectory = System.getProperty("user.dir") + "/images";
+
     private final AvatarRepository repository;
     private final UserRepository userRepository;
 
+    /**
+     * <b>Удаляет указанный аватар из репозитория. </b> <p>
+     *
+     * @param avatar аватар, который необходимо удалить.
+     */
     @Override
     public void removeAvatar(Avatar avatar) {
         repository.delete(avatar);
 
     }
 
+    /**
+     * <b>Получает аватар по его идентификатору. </b> <p>
+     *
+     * @param id идентификатор аватара.
+     * @return аватар с указанным идентификатором, или новый пустой аватар, если не найден.
+     */
     @Override
     public Avatar getAvatar(Long id) {
         return repository.findById(id).orElse(new Avatar());
     }
 
+    /**
+     * <b>Загружает новый аватар для текущего пользователя. </b> <p>
+     *
+     * @param image файл изображения, который необходимо загрузить.
+     * @return загруженный аватар.
+     * @throws IOException если произошла ошибка при работе с файлами.
+     */
     @Override
     public Avatar uploadAvatar(MultipartFile image) throws IOException {
         User user = userRepository.findUserByEmailIgnoreCase(SecurityContextHolder.getContext().getAuthentication().getName()).get();
@@ -60,6 +89,12 @@ public class AvatarServiceImpl implements AvatarService {
         return avatar;
     }
 
+    /**
+     * <b>Получает расширение файла из его имени. </b> <p>
+     *
+     * @param fileName имя файла.
+     * @return расширение файла без точки.
+     */
     private String getExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }

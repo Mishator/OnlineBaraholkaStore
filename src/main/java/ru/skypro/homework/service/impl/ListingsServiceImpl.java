@@ -27,6 +27,15 @@ import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * <b>Сервис для работы с объявлениями (Listings). </b> <p>
+ *
+ * <p>Этот класс реализует методы для получения списка объявлений текущего пользователя,
+ * обновления изображений объявлений и проверки прав доступа к объявлениям.</p>
+ *
+ * <p>Сервис использует репозиторий для взаимодействия с базой данных и маппер для преобразования
+ * объектов между слоями приложения.</p>
+ */
 @Service
 @RequiredArgsConstructor
 public class ListingsServiceImpl implements ListingsService {
@@ -36,9 +45,11 @@ public class ListingsServiceImpl implements ListingsService {
     private final ImageRepository imageRepository;
     private final ListingMapper listingMapper;
     private final ImageService imageService;
-    private Listing listing;
-    private Authentication authentication;
 
+    /**
+     * <b>Метод получения всех объявлений. </b> <p>
+     * (В виде объекта DTO {@link ListingDTO} )
+     */
     @Override
     public List<ListingDTO> getAllListings() {
         List<Listing> listings = listingRepository.findAll();
@@ -51,6 +62,19 @@ public class ListingsServiceImpl implements ListingsService {
         return listingsDTO;
     }
 
+    /**
+     * <b>Метод добавления объявления в БД. </b> <p>
+     * Принцип работы:<p>
+     * На основе минимальной информации DTO {@link CreateOrUpdateListing}
+     * создать полноценный объект объявления {@link Listing},
+     * на основе данных аутентификации создать объект пользователя {@link User},
+     * добавить созданного пользователя и картинку из параметра в объект объявления,
+     * сохранить получившийся объект с помощью репозитория {@link ListingRepository},
+     *
+     * @param  createOrUpdateListing DTO объявления {@link CreateOrUpdateListing} <p>
+     * @param  image картинка товара {@link MultipartFile} <p>
+     * @param  authentication переменная аутентификации хранящая данные об авторизованном пользователе {@link Authentication} <p>
+     */
     @Override
     public ListingDTO addListing(CreateOrUpdateListing createOrUpdateListing, MultipartFile image, Authentication authentication) throws IOException {
         Listing listing = listingMapper.createOrUpdateListingToListing(createOrUpdateListing);
@@ -62,12 +86,29 @@ public class ListingsServiceImpl implements ListingsService {
         return listingMapper.listingToListingDTO(listing);
     }
 
+    /**
+     * <b>Метод получения объявления по ID </b> <p>
+     * Запрошенный {@link Listing} преобразуется в DTO {@link ExtendedListingDTO} и возвращается методом.
+     */
     @Override
     public ExtendedListingDTO getListing(long id) {
         return listingMapper.toExtendedListing(listingRepository.findById(id).orElseThrow(() ->
                 new NotFoundException("Объявление с ID = " + id + " не найдено ")));
     }
 
+    /**
+     * <b> Метод удаления объявления. </b> <p>
+     * Метод использует аннотацию {@link Transactional} <p>
+     * Принцип работы:<p>
+     * 1) По переданному ID находится объявление <p>
+     * 2) Проводится проверка на доступ к редактированию объявления
+     * через метод {@link #checkPermit(Listing, Authentication)} <p>
+     * 3) В репозиториях {@link CommentRepository} , {@link ImageRepository} , {@link ListingRepository} - вызываются методы удаления
+     * комментариев объявления, картинки объявления, и данных об объявлении соответственно.
+     *
+     * @param id id объявления (long)
+     * @param authentication объект аутентификации с данными текущего пользователя
+     */
     @Override
     @Transactional
     public void deleteListing(long id, Authentication authentication) throws AccessDeniedException {
@@ -82,6 +123,18 @@ public class ListingsServiceImpl implements ListingsService {
     }
 
 
+    /**
+     * <b> Метод изменения данных объявления. </b> <p>
+     * (Названия, описания и цены)  {@link CreateOrUpdateListing} <p>
+     * Принцип работы:<p>
+     * Находит по ID объявление, уточняет есть ли у пользователя доступ к редактированию {@link #checkPermit(Listing, Authentication)} ,
+     *  далее меняет данные (Названия, описания и цены), сохраняет объявление, возвращает DTO только что измененного
+     *  объекта {@link ListingDTO}
+     * @param id id объявления (long)
+     * @param createOrUpdateListing DTO объявления {@link CreateOrUpdateListing}
+     * @param authentication объект аутентификации с данными текущего пользователя
+     * @return {@link ListingDTO} DTO объявления
+     */
     @Override
     public ListingDTO updateListing(long id, CreateOrUpdateListing createOrUpdateListing, Authentication authentication) throws AccessDeniedException {
         Listing listing = listingRepository.findById(id).orElseThrow(() ->
@@ -95,7 +148,14 @@ public class ListingsServiceImpl implements ListingsService {
     }
 
 
-
+    /**
+     * <b> Метод возвращающий все объявления пользователя. </b> <p>
+     * Принцип работы:<p>
+     * Из {@link Authentication} достает пользователя, по данному пользователю находим все его объявления.
+     * Маппер пакует лист объявлений в  {@link ListingsDTO} и возвращает DTO
+     * @param authentication объект аутентификации с данными текущего пользователя
+     * @return {@link ListingsDTO} DTO всех объявлений пользователя
+     */
     @Override
     public ListingsDTO getListingsMe(Authentication authentication) {
         User user = new GetAuthentication().getAuthenticationUser(authentication.getName());
@@ -103,6 +163,18 @@ public class ListingsServiceImpl implements ListingsService {
         return listingMapper.listingListToListings(listingList);
     }
 
+    /**
+     * <b> Метод изменения изображения объявления. </b> <p>
+     * Метод использует аннотацию {@link Transactional} <p>
+     * Принцип работы:<p>
+     * Найти объявление по ID, далее проверить доступ к редактированию, из объявления взять текущую картинку,
+     * сохранить её отдельно, на её место сохранить новую, не актуальную картинку - удалить, сохранить объект объявления,
+     * в котором уже будет новая картинка.
+     * @param id id объявления (long)
+     * @param image файл  {@link MultipartFile} (картинка объявления)
+     * @param authentication объект аутентификации с данными текущего пользователя
+     * @throws IOException (может выкинуть ошибки загрузки)
+     */
     @Override
     @Transactional
     public void updateListingImage(Long id, MultipartFile image, Authentication authentication) throws IOException {
@@ -115,6 +187,15 @@ public class ListingsServiceImpl implements ListingsService {
         listingRepository.save(listing);
     }
 
+    /**
+     * <b> Метод проверки доступа к редактированию объявления. </b> <p>
+     * Служебный внутренний метод принимающий на вход: <p> {@link Listing} и {@link Authentication} <p>
+     * далее сравнивает автора объявления и текущего пользователя, а также проверяет, является ли пользователь Админом.
+     * Если текущий пользователь не автор объявления и не админ, то будет выброшено  {@link AccessDeniedException}
+     *
+     * @param listing объявление
+     * @param authentication объект аутентификации с данными текущего пользователя
+     */
     public void checkPermit(Listing listing, Authentication authentication) throws AccessDeniedException {
         if (!listing.getAuthor().getEmail().equals(authentication.getName())
                 && !authentication.getAuthorities().contains(new SimpleGrantedAuthority("ADMIN"))) {
