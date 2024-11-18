@@ -1,9 +1,6 @@
 package ru.skypro.homework.dto.listing;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * <b>Класс представляет собой DTO (Data Transfer Object) для создания или обновления объявления. </b> <p>
@@ -13,6 +10,7 @@ import lombok.NoArgsConstructor;
  *
  * <p>Используется в слоях приложения, связанных с обработкой объявлений.</p>
  */
+@Setter
 @Getter
 @Data
 @NoArgsConstructor
@@ -40,15 +38,4 @@ public class CreateOrUpdateListing {
      */
     private String description;
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setPrice(int price) {
-        this.price = price;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

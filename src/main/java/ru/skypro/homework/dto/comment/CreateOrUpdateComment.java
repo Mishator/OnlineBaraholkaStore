@@ -1,9 +1,6 @@
 package ru.skypro.homework.dto.comment;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * <b>Класс представляет собой DTO (Data Transfer Object) для создания или обновления комментария. </b> <p>
@@ -13,6 +10,7 @@ import lombok.NoArgsConstructor;
  *
  * <p>Используется в слоях приложения, связанных с обработкой комментариев.</p>
  */
+@Setter
 @Getter
 @Data
 @NoArgsConstructor
@@ -26,7 +24,4 @@ public class CreateOrUpdateComment {
      */
     private String text;
 
-    public void setText(String text) {
-        this.text = text;
-    }
 }

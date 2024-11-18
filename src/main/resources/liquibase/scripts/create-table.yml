@@ -62,6 +62,3 @@ databaseChangeLog:
                author_id  bigint references users(id)
  
                );
-#        - sqlFile:
-#            path: idx.sql
-#            relativeToChangelogFile: true

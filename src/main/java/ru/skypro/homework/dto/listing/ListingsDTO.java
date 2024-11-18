@@ -1,9 +1,6 @@
 package ru.skypro.homework.dto.listing;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import java.util.List;
  * <p>Этот класс содержит общее количество объявлений и список
  * конкретных объявлений, представленных в виде объектов {@link ListingDTO}.</p>
  */
+@Setter
 @Getter
 @Data
 @NoArgsConstructor
@@ -30,11 +28,4 @@ public class ListingsDTO {
      */
     private List<ListingDTO> results;
 
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public void setResults(List<ListingDTO> results) {
-        this.results = results;
-    }
 }

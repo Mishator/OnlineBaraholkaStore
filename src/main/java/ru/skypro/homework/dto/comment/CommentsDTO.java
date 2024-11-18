@@ -1,9 +1,6 @@
 package ru.skypro.homework.dto.comment;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import java.util.List;
  * и список самих комментариев.
  * </p>
  */
+@Setter
 @Getter
 @Data
 @NoArgsConstructor
@@ -30,11 +28,4 @@ public class CommentsDTO {
      */
     private List<CommentDTO> results;
 
-    public void setCount(int count) {
-        this.count = count;
-    }
-
-    public void setResults(List<CommentDTO> results) {
-        this.results = results;
-    }
 }

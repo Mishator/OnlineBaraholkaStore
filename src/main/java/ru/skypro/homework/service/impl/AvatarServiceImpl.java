@@ -95,7 +95,7 @@ public class AvatarServiceImpl implements AvatarService {
      * @param fileName имя файла.
      * @return расширение файла без точки.
      */
-    private String getExtensions(String fileName) {
+    public String getExtensions(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 

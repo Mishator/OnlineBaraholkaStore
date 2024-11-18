@@ -11,6 +11,7 @@ import lombok.*;
  * поля, связанные с автором объявления, изображением, ценой и заголовком.</p>
  */
 @EqualsAndHashCode(callSuper = true)
+@Setter
 @Getter
 @Data
 @NoArgsConstructor
@@ -41,25 +42,5 @@ public class ListingDTO extends ListingsDTO {
      * <b>Заголовок объявления. </b> <p>
      */
     private String title;
-
-    public void setAuthor(Long author) {
-        this.author = author;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
-    public void setPk(Long pk) {
-        this.pk = pk;
-    }
-
-    public void setPrice(Integer price) {
-        this.price = price;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
 
 }

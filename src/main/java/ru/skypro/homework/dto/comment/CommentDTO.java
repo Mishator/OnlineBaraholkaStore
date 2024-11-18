@@ -1,9 +1,6 @@
 package ru.skypro.homework.dto.comment;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
@@ -15,8 +12,9 @@ import java.time.LocalDateTime;
  * идентификаторе комментария и тексте самого комментария.</p>
  *
  * <p>Использует аннотации Lombok для автоматической генерации
- * геттеров, конструкторов и других методов.</p>
+ * геттеров, сеттеров, конструкторов и других методов.</p>
  */
+@Setter
 @Getter
 @Data
 @NoArgsConstructor
@@ -53,27 +51,4 @@ public class CommentDTO {
      */
     private String text;
 
-    public void setAuthor(long author) {
-        this.author = author;
-    }
-
-    public void setAuthorImage(String authorImage) {
-        this.authorImage = authorImage;
-    }
-
-    public void setAuthorFirstName(String authorFirstName) {
-        this.authorFirstName = authorFirstName;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setPk(long pk) {
-        this.pk = pk;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
 }
