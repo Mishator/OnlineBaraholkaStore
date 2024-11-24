@@ -3,6 +3,7 @@ package ru.skypro.homework.config;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import ru.skypro.homework.entity.User;
 import ru.skypro.homework.exception.UserNotFoundException;
 
@@ -10,6 +11,7 @@ import ru.skypro.homework.exception.UserNotFoundException;
  * Конфиг - класс для получения аутентифицированного пользователя,
  * класс содержащий единственный метод {@link #getAuthenticationUser}
  */
+@Component
 public class GetAuthentication {
 
     /**

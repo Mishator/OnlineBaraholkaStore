@@ -24,7 +24,6 @@ import ru.skypro.homework.service.ListingsService;
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,15 +50,9 @@ public class ListingsServiceImpl implements ListingsService {
      * (В виде объекта DTO {@link ListingDTO} )
      */
     @Override
-    public List<ListingDTO> getAllListings() {
+    public ListingsDTO getAllListings() {
         List<Listing> listings = listingRepository.findAll();
-        List<ListingDTO> listingsDTO = new ArrayList<>();
-        if (!listings.isEmpty()) {
-            for (Listing listing : listings) {
-                listingsDTO.add(listingMapper.listingToListingDTO(listing));
-            }
-        }
-        return listingsDTO;
+        return listingMapper.listingListToListings(listings);
     }
 
     /**

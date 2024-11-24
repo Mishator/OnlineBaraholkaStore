@@ -2,6 +2,9 @@ package ru.skypro.homework.dto.listing;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 /**
  * <b>Класс представляет собой DTO (Data Transfer Object) для создания или обновления объявления. </b> <p>
  *
@@ -22,6 +25,9 @@ public class CreateOrUpdateListing {
      *
      * <p>Должен содержать краткое и информативное название объявления.</p>
      */
+
+    @NotBlank
+    @Size(min = 8)
     private String title;
 
     /**
@@ -36,6 +42,8 @@ public class CreateOrUpdateListing {
      *
      * <p>Должно содержать детальную информацию о товаре или услуге, предлагаемых в объявлении.</p>
      */
+    @NotBlank
+    @Size(min = 8)
     private String description;
 
 }

@@ -53,7 +53,7 @@ public class ListingsController {
     @GetMapping()
     @Operation(summary = "Получение всех объявлений", description = "getAllListings")
     public ResponseEntity<ListingsDTO> getAllListings() {
-        return ResponseEntity.ok((ListingsDTO) listingService.getAllListings());
+        return ResponseEntity.ok(listingService.getAllListings());
     }
 
     /**

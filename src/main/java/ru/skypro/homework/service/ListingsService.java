@@ -4,13 +4,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.listing.CreateOrUpdateListing;
 import ru.skypro.homework.dto.listing.ExtendedListingDTO;
-import ru.skypro.homework.dto.listing.ListingDTO;
 import ru.skypro.homework.dto.listing.ListingsDTO;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.AccessDeniedException;
-import java.util.List;
 
 /**
  * Интерфейс ListingsService предоставляет методы для управления объявлениями.
@@ -24,7 +22,7 @@ public interface ListingsService {
      *
      * @return список объектов ListingDTO, представляющих все объявления
      */
-    List<ListingDTO> getAllListings();
+    ListingsDTO getAllListings();
 
     /**
      * <b>Добавляет новое объявление. </b> <p>

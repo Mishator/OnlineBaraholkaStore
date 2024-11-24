@@ -96,5 +96,4 @@ public interface ListingMapper {
         listingsDTO.setResults(listingDTOList);
         return listingsDTO;
     }
-
 }

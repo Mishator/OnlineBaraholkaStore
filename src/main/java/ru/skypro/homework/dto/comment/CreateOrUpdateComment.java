@@ -2,6 +2,9 @@ package ru.skypro.homework.dto.comment;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+
 /**
  * <b>Класс представляет собой DTO (Data Transfer Object) для создания или обновления комментария. </b> <p>
  *
@@ -22,6 +25,9 @@ public class CreateOrUpdateComment {
      *
      * <p>Должен содержать содержимое комментария, которое будет отображаться пользователям.</p>
      */
+
+    @NotBlank
+    @Size(min = 8)
     private String text;
 
 }

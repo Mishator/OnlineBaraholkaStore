@@ -2,6 +2,8 @@ package ru.skypro.homework.dto.comment;
 
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 /**
@@ -49,6 +51,9 @@ public class CommentDTO {
     /**
      * <b>Текст комментария. </b> <p>
      */
+
+    @NotBlank
+    @Size(min = 8)
     private String text;
 
 }
