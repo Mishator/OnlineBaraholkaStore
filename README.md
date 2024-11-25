@@ -27,6 +27,15 @@ CRUD-операции для объявлений и комментариев: �
 - Liquibase
 - Docker
 
+Для запуска нужно:
+- Клонировать проект в среду разработки
+- Прописать properties в файле **[application.properties](src/main/resources/application.properties)**
+- Запустить **[Docker](https://www.docker.com)**
+- Запустить **Docker образ** (docker run --rm -p 3000:3000 ghcr.io/dmitry-bizin/front-react-avito:v1.21)
+- Запустить метод **main** в файле **[HomeworkApplication.java](src/main/java/ru/skypro/homework/HomeworkApplication.java)**
+
+После выполнения всех действий сайт будет доступен по ссылке **http://localhost:3000**
+
 <h3>Над проектом работал:</h3>
 
 - Войтех Михаил
